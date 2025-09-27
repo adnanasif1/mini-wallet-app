@@ -42,4 +42,29 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function sentTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'sender_id');
+    }
+
+    public function receivedTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'receiver_id');
+    }
+
+    public function getBalanceAttribute($value)
+    {
+        return number_format($value / 100, 2, '.', '');
+    }
+    
+    public function getMyBalance()
+    {
+        return (int) $this->attributes['balance'];
+    }
+
+    public function setMyBalance(int $cents)
+    {
+        $this->attributes['balance'] = $cents;
+    }
 }

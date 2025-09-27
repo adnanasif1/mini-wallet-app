@@ -11,7 +11,8 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,16 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'receiver_id' => ['required','integer','exists:users,id'],
+            'amount' => ['required','numeric','min:0.01'],
         ];
+    }
+
+    public function passedValidation()
+    {
+        $amount = $this->input('amount');
+        $this->merge([
+            'amount_cents' => (int) round($amount * 100),
+        ]);
     }
 }
