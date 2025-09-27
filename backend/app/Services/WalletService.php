@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Events\TransactionCreated;
 use Illuminate\Validation\ValidationException;
 
 class WalletService
@@ -66,6 +67,8 @@ class WalletService
                 'amount' => $amountInCents,
                 'commission_fee' => $commissionCents,
             ]);
+
+            event(new TransactionCreated($transaction));
 
             return $transaction;
         });
