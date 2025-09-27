@@ -5,13 +5,22 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class WalletService
 {
     private const COMMISSION_RATE = 0.015; // 1.5%
 
-    public function transfer(int $senderId, int $receiverId, int $amountInCents)
+    public function transfer(int $senderId, int $receiverId, int $amountInCents) : Transaction
     {
+
+        if ($amountInCents <= 0) {
+            throw ValidationException::withMessages(['amount' => 'Please specify amount']);
+        }
+
+        if ($senderId === $receiverId) {
+            throw ValidationException::withMessages(['receiver_id' => 'Sender and Receiver can not be same']);
+        }
         
         $newTransaction =  DB::transaction(function () use ($senderId, $receiverId, $amountInCents) {
             
@@ -34,7 +43,7 @@ class WalletService
             $senderBalance = $sender->getMyBalance();
 
             if ($senderBalance < $totalDebitAmount) {
-                return ['amount' => 'Insufficient balance.'];
+                throw ValidationException::withMessages(['amount' => 'Insufficient balance.']);
             }
 
             $receiverBalance =  $receiver->getMyBalance();

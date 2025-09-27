@@ -15,15 +15,13 @@ class TransactionController extends Controller
 
     public function __construct(WalletService $walletService)
     {
-        // $this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum');
         $this->walletService = $walletService;
     }
 
     public function listTransactions(Request $request)
     {
-        // $user = $request->user();
-          // Get custom user by ID
-    $user = User::findOrFail(1);
+        $user = $request->user();
 
         $transactions = Transaction::where(function ($q) use ($user) {
             $q->where('sender_id', $user->id)->orWhere('receiver_id', $user->id);
@@ -38,10 +36,7 @@ class TransactionController extends Controller
     public function transferFunds(StoreTransactionRequest $request)
     {
  
-          // Get custom user by ID
-    $sender = User::findOrFail(1);
-
-        // $sender = $request->user();
+        $sender = $request->user();
         $receiverId = $request->input('receiver_id');
         $amountCents = $request->input('amount_cents');
 
