@@ -64,7 +64,7 @@ PUSHER_APP_CLUSTER=your_cluster
 php artisan key:generate
 ```
 
-5. Run database migrations and db seed to make **6 users** and all user's password is **password**
+5. Run database migrations and db seed to make **6 users** and all user's password is **secret123**
 
 ```bash
 php artisan migrate
