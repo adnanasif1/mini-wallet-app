@@ -1,0 +1,20 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="4">
+        <TransferForm />
+      </v-col>
+      <v-col cols="12" md="8">
+        <TransactionList :userId="authStore.userId!" />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script setup lang="ts">
+import TransferForm from './../components/TransferForm.vue';
+import TransactionList from './../components/TransactionList.vue';
+import { useAuthStore } from '../stores/auth';
+
+const authStore = useAuthStore();
+</script>
