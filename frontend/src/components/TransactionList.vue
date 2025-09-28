@@ -19,19 +19,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { getEcho } from '@/plugins/echo'
+import type { TransactionEvent } from '@/types/events'
 import api from '../services/api';
 
-interface Transaction {
-  id: number;
-  sender_id: number;
-  receiver_id: number;
-  amount: number;
-  commission_fee: number;
-  created_at: string;
-}
-
-const props = defineProps<{ userId: number }>();
-const transactions = ref<Transaction[]>([]);
+const props = defineProps<{ userId: number | null }>();
+const transactions = ref<TransactionEvent[]>([]);
 const balance = ref(0);
 
 const fetchTransactions = async () => {
@@ -47,11 +40,15 @@ const fetchTransactions = async () => {
 onMounted(() => {
   fetchTransactions();
 
-  // Pusher real-time updates
-  window.Echo.private(`user.${props.userId}`)
-    .listen('TransactionEvent', (e: any) => {
-      transactions.value.unshift(e.transaction);
-      balance.value = e.balance;
-    });
+  getEcho().private(`user.${props.userId}`)
+      .listen('.transaction.created', (e: TransactionEvent) => {
+        transactions.value.unshift(e);
+        
+        if (props.userId == e.sender_id) {
+          balance.value = e.sender_balance;
+        } else {
+          balance.value = e.receiver_balance;
+        }
+      });
 });
 </script>

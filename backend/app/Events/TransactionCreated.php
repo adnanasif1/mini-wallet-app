@@ -35,7 +35,10 @@ class TransactionCreated implements ShouldBroadcastNow
             'sender_id' => $this->transaction->sender_id,
             'receiver_id' => $this->transaction->receiver_id,
             'amount' => $this->transaction->amount,
-            'commission_fee' => $this->transaction->commission_fee
+            'commission_fee' => $this->transaction->commission_fee,
+            'sender_balance' => $this->transaction->sender->balance,
+            'receiver_balance' => $this->transaction->receiver->balance,
+            'created_at' => $this->transaction->created_at->toIso8601String()
         ];
     }
 

@@ -15,6 +15,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import api from '../services/api';
+import type { AxiosError } from 'axios'
+import { initEcho } from '@/plugins/echo'
 
 const email = ref('');
 const password = ref('');
@@ -27,10 +29,11 @@ const login = async () => {
   error.value = '';
   try {
     const res = await api.post('/login', { email: email.value, password: password.value });
-    console.log(res);
     authStore.setAuth(res.data.token, res.data.user.id);
+    initEcho(res.data.token)
     router.push('/dashboard');
-  } catch (err: any) {
+  } catch (e) {
+    const err = e as AxiosError<{ message: string }>
     error.value = err.response?.data?.message || 'Login failed';
   }
 };
