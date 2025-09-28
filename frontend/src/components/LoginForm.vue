@@ -29,7 +29,7 @@ const login = async () => {
   error.value = '';
   try {
     const res = await api.post('/login', { email: email.value, password: password.value });
-    authStore.setAuth(res.data.token, res.data.user.id);
+    authStore.setAuth(res.data.token, res.data.user.id, res.data.user.name);
     initEcho(res.data.token)
     router.push('/dashboard');
   } catch (e) {

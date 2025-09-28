@@ -2,7 +2,7 @@
   <v-app>
     <NavBar />
 
-    <v-main>
+    <v-main class="mt-4">
   <v-container>
 
     <v-row>
@@ -10,7 +10,7 @@
         <TransferForm />
       </v-col>
       <v-col cols="12" md="8">
-        <TransactionList :userId="authStore.userId" />
+        <TransactionList :userId="authStore.userId" :userName="authStore.userName" />
       </v-col>
     </v-row>
   </v-container>

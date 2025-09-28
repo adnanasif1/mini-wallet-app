@@ -1,14 +1,20 @@
 <template>
   <v-card class="pa-4">
-    <v-card-title>Transactions</v-card-title>
-    <v-card-subtitle>Balance: {{ balance }}</v-card-subtitle>
+    <v-card-title>Hello, {{props.userName}}! <span class="float-right text-green">Balance: {{ balance }}</span> </v-card-title>
+  </v-card>
+  <v-card class="pa-4 mt-4">
+    <v-card-title>Transactions History:</v-card-title>
     <v-card-text>
-      <v-list>
+      <v-list style="max-height: 300px; overflow-y: auto;">
         <v-list-item v-for="tx in transactions" :key="tx.id">
             <v-list-item-title>
-              <span v-if="tx.sender_id === userId">Sent</span>
-              <span v-else>Received</span>:
-              {{ tx.amount }} (Fee: {{ tx.commission_fee }})
+              <span v-if="tx.sender_id === userId" class="text-red-lighten-1">Sent to user-{{ tx.receiver_id }} </span>
+              <span v-else class="text-green-lighten-1">Received from user-{{ tx.sender_id }}</span>:
+              {{ tx.amount }} 
+                      <span v-if="tx.sender_id === userId" class="text-caption text-grey-darken-1">
+            (Fee: {{ tx.commission_fee }})
+        </span>
+
             </v-list-item-title>
             <v-list-item-subtitle>{{ new Date(tx.created_at).toLocaleString() }}</v-list-item-subtitle>
         </v-list-item>
@@ -23,7 +29,7 @@ import { getEcho } from '@/plugins/echo'
 import type { TransactionEvent } from '@/types/events'
 import api from '../services/api';
 
-const props = defineProps<{ userId: number | null }>();
+const props = defineProps<{ userId: number | null, userName: string | null }>();
 const transactions = ref<TransactionEvent[]>([]);
 const balance = ref(0);
 
